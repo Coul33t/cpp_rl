@@ -3,7 +3,7 @@
 Engine::Engine() {
 	TCODConsole::setCustomFont("Anikki_square_16x16.png", TCOD_FONT_LAYOUT_ASCII_INROW);
 	TCODConsole::initRoot(80, 50, "libtcod C++ tutorial", false);
-	player = new Actor(0, 0, '@', TCODColor::white);
+	player = new Actor(0, 0, "Player", '@', TCODColor::white);
 	actors.push_back(player);
 	map = new Map(70, 45);
 	player->setCoordinates(map->getRoomCenter(0));
@@ -21,6 +21,17 @@ Engine::~Engine() {
 
 Actor* Engine::getPlayer() const {
 	return player;
+}
+
+bool Engine::canWalk(int x, int y) const {
+	if (!map->isWalkable(x, y))
+		return false;
+
+	for (auto it = actors.begin(); it != actors.end(); it++)
+		if ((*it)->getX() == x && (*it)->getY() == y)
+			return false;
+
+	return true;
 }
 
 void Engine::update() {

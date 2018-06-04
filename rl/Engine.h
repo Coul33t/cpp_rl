@@ -17,6 +17,8 @@ class Engine {
 		void render();
 
 	private:
+		bool canWalk(int x, int y) const;
+
 		std::vector<Actor*> actors;
 		Actor* player;
 		Map* map;
