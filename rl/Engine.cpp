@@ -11,6 +11,8 @@ Engine::Engine() {
 	fov_radius = 20;
 	compute_fov = true;
 	map->computeFov(player->getX(), player->getY(), fov_radius);
+
+	populateDungeon();
 }
 
 Engine::~Engine() {
@@ -21,6 +23,50 @@ Engine::~Engine() {
 
 Actor* Engine::getPlayer() const {
 	return player;
+}
+
+void Engine::addMonster(int x, int y) {
+	actors.push_back(new Actor(x, y, "Vermin", 'v', TCODColor::brass));
+}
+
+void Engine::populateDungeon() {
+	srand((unsigned int)time(NULL));
+
+	for (auto it = map->getRooms().begin(); it != map->getRooms().end(); it++) {
+		int nb_monster = rand() % (((*it)->y2 - (*it)->y1) * ((*it)->x2 - (*it)->x1)) / 32;
+
+		int cluster_chance = rand() % 100;
+
+		// Here comes the HORDE
+		if (cluster_chance < 5)
+			nb_monster *= 3;
+
+		for (int i = 0; i < nb_monster; i++) {
+			int x = (*it)->x1 + rand() % ((*it)->x2 - (*it)->x1);
+			int y = (*it)->y1 + rand() % ((*it)->y2 - (*it)->y1);
+			while (!canWalk(x, y)) {
+				x = (*it)->x1 + rand() % ((*it)->x2 - (*it)->x1);
+				y = (*it)->y1 + rand() % ((*it)->y2 - (*it)->y1);
+			}
+
+			addMonster(x, y);
+		}
+	}
+
+	if (actors.size() < CLUSTER_THRESHOLD) {
+		int rn = rand() % map->getRooms().size();
+
+		for (int i = 0; i < 20; i++) {
+			int x = map->getRooms()[rn]->x1 + rand() % (map->getRooms()[rn]->x2 - map->getRooms()[rn]->x1);
+			int y = map->getRooms()[rn]->y1 + rand() % (map->getRooms()[rn]->y2 - map->getRooms()[rn]->y1);
+			while (!canWalk(x, y)) {
+				x = map->getRooms()[rn]->x1 + rand() % (map->getRooms()[rn]->x2 - map->getRooms()[rn]->x1);
+				y = map->getRooms()[rn]->y1 + rand() % (map->getRooms()[rn]->y2 - map->getRooms()[rn]->y1);
+			}
+
+			addMonster(x, y);
+		}
+	}
 }
 
 bool Engine::canWalk(int x, int y) const {
@@ -40,56 +86,56 @@ void Engine::update() {
 
 	switch (key.vk) {
 		case TCODK_KP8:
-			if (map->isWalkable(player->getX(), player->getY() - 1)) {
+			if (canWalk(player->getX(), player->getY() - 1)) {
 				player->move(0, -1);
 				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP9:
-			if (map->isWalkable(player->getX() + 1, player->getY() - 1)) {
+			if (canWalk(player->getX() + 1, player->getY() - 1)) {
 				player->move(1, -1);
 				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP6:
-			if (map->isWalkable(player->getX() + 1, player->getY())) {
+			if (canWalk(player->getX() + 1, player->getY())) {
 				player->move(1, 0);
 				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP3:
-			if (map->isWalkable(player->getX() + 1, player->getY() + 1)) {
+			if (canWalk(player->getX() + 1, player->getY() + 1)) {
 				player->move(1, 1);
 				compute_fov = true;
 			}
 			break;
 		
 		case TCODK_KP2:
-			if (map->isWalkable(player->getX(), player->getY() + 1)) {
+			if (canWalk(player->getX(), player->getY() + 1)) {
 				player->move(0, 1);
 				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP1:
-			if (map->isWalkable(player->getX() - 1, player->getY() + 1)) {
+			if (canWalk(player->getX() - 1, player->getY() + 1)) {
 				player->move(-1, 1);
 				compute_fov = true;
 			}
 			break;
 		
 		case TCODK_KP4:
-			if (map->isWalkable(player->getX() - 1, player->getY())) {
+			if (canWalk(player->getX() - 1, player->getY())) {
 				player->move(-1, 0);
 				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP7:
-			if (map->isWalkable(player->getX() - 1, player->getY() - 1)) {
+			if (canWalk(player->getX() - 1, player->getY() - 1)) {
 				player->move(-1, -1);
 				compute_fov = true;
 			}

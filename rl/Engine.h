@@ -17,6 +17,9 @@ class Engine {
 		void render();
 
 	private:
+		void populateDungeon();
+		void addMonster(int x, int y);
+
 		bool canWalk(int x, int y) const;
 
 		std::vector<Actor*> actors;
@@ -25,6 +28,8 @@ class Engine {
 
 		int fov_radius;
 		bool compute_fov;
+
+		static const int CLUSTER_THRESHOLD = 20;
 };
 
 #endif // __ENGINE__
