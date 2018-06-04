@@ -1,7 +1,7 @@
 #include "Actor.h"
 
-Actor::Actor(int x, int y, int ch, TCODColor colour) :
-	x(x), y(y), ch(ch), col(col) {
+Actor::Actor(int x, int y, std::string name, int ch, TCODColor colour) :
+	x(x), y(y), name(name), ch(ch), col(col) {
 
 }
 
