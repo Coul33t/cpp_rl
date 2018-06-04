@@ -6,6 +6,9 @@
 *.sln
 *.vcxproj
 *.vcxproj.filters
+.kdev4/
+.vs/
+*.kdev4
 
 # User-specific files
 *.suo
