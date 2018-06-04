@@ -7,6 +7,10 @@ Engine::Engine() {
 	actors.push_back(player);
 	map = new Map(70, 45);
 	player->setCoordinates(map->getRoomCenter(0));
+
+	fov_radius = 20;
+	compute_fov = true;
+	map->computeFov(player->getX(), player->getY(), fov_radius);
 }
 
 Engine::~Engine() {
@@ -25,50 +29,58 @@ void Engine::update() {
 
 	switch (key.vk) {
 		case TCODK_KP8:
-			if (!map->isWalkable(player->getX(), player->getY() - 1)) {
+			if (map->isWalkable(player->getX(), player->getY() - 1)) {
 				player->move(0, -1);
+				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP9:
-			if (!map->isWalkable(player->getX() + 1, player->getY() - 1)) {
+			if (map->isWalkable(player->getX() + 1, player->getY() - 1)) {
 				player->move(1, -1);
+				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP6:
-			if (!map->isWalkable(player->getX() + 1, player->getY())) {
+			if (map->isWalkable(player->getX() + 1, player->getY())) {
 				player->move(1, 0);
+				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP3:
-			if (!map->isWalkable(player->getX() + 1, player->getY() + 1)) {
+			if (map->isWalkable(player->getX() + 1, player->getY() + 1)) {
 				player->move(1, 1);
+				compute_fov = true;
 			}
 			break;
 		
 		case TCODK_KP2:
-			if (!map->isWalkable(player->getX(), player->getY() + 1)) {
+			if (map->isWalkable(player->getX(), player->getY() + 1)) {
 				player->move(0, 1);
+				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP1:
-			if (!map->isWalkable(player->getX() - 1, player->getY() + 1)) {
+			if (map->isWalkable(player->getX() - 1, player->getY() + 1)) {
 				player->move(-1, 1);
+				compute_fov = true;
 			}
 			break;
 		
 		case TCODK_KP4:
-			if (!map->isWalkable(player->getX() - 1, player->getY())) {
+			if (map->isWalkable(player->getX() - 1, player->getY())) {
 				player->move(-1, 0);
+				compute_fov = true;
 			}
 			break;
 
 		case TCODK_KP7:
-			if (!map->isWalkable(player->getX() - 1, player->getY() - 1)) {
+			if (map->isWalkable(player->getX() - 1, player->getY() - 1)) {
 				player->move(-1, -1);
+				compute_fov = true;
 			}
 			break;
 
@@ -81,6 +93,11 @@ void Engine::update() {
 		default:
 			break;
 	}
+
+	if (compute_fov) {
+		map->computeFov(player->getX(), player->getY(), fov_radius);
+		compute_fov = false;
+	}
 }
 
 void Engine::render() {
@@ -88,5 +105,6 @@ void Engine::render() {
 	map->render();
 
 	for (auto it = actors.begin(); it != actors.end(); it++)
-		(*it)->render();
+		if (map->isInFov((*it)->getX(), (*it)->getY()))
+			(*it)->render();
 }

@@ -26,45 +26,61 @@ class BspListener : public ITCODBspCallback {
 		}
 };
 
-Map::Map() : width(50), height(50) {
+Map::Map(int w, int h) : width(w), height(h) {
+
 	for (auto i = 0; i < width*height; i++)
 		tiles.push_back(new Tile());
-	TCODBsp bsp(0, 0, 50, 50);
-	bsp.splitRecursive(NULL, 5, ROOM_MIN_SIZE, ROOM_MAX_SIZE, 2.0f, 2.0f);
+
+	t_map = new TCODMap(width, height);
+
+	TCODBsp bsp(0, 0, width, height);
+	bsp.splitRecursive(NULL, 5, ROOM_MIN_SIZE, ROOM_MAX_SIZE, 1.1f, 1.1f);
 	BspListener listener(*this);
 	bsp.traverseInvertedLevelOrder(&listener, NULL);
+
 	createDoorsAll();
 }
 
-Map::Map(int w, int h) : width(w), height(h) {
-	for (auto i = 0; i < width*height; i++)
-		tiles.push_back(new Tile());
-	TCODBsp bsp(0, 0, width, height);
-	bsp.splitRecursive(NULL, 5, ROOM_MIN_SIZE, ROOM_MAX_SIZE, 2.0f, 2.0f);
-	BspListener listener(*this);
-	bsp.traverseInvertedLevelOrder(&listener, NULL);
-	createDoorsAll();
-}
 Map::~Map() {
 	for (auto it = tiles.begin(); it != tiles.end(); it++)
 		delete (*it);
 
 	for (auto it = rooms.begin(); it != rooms.end(); it++)
 		delete (*it);
+
+	delete t_map;
 }
 
 bool Map::isWalkable(int x, int y) const {
-	return !tiles[x + y * width]->can_walk;
+	return tiles[x + y * width]->can_walk;
+}
+
+bool Map::isExplored(int x, int y) const {
+	return tiles[x + y * width]->explored;
+}
+
+bool Map::isInFov(int x, int y) const {
+	if (t_map->isInFov(x, y)) {
+		tiles[x + y * width]->explored = true;
+		return true;
+	}
+	return false;
+}
+
+void Map::computeFov(int p_x, int p_y, int radius) {
+	t_map->computeFov(p_x, p_y, radius);
 }
 
 void Map::setWall(int x, int y) {
 	tiles[x + y * width]->can_walk = false;
 	tiles[x + y * width]->ch = '#';
+	t_map->setProperties(x, y, false, false);
 }
 
 void Map::setFloor(int x, int y) {
 	tiles[x + y * width]->can_walk = true;
 	tiles[x + y * width]->ch = '.';
+	t_map->setProperties(x, y, true, true);
 }
 
 void Map::dig(int x1, int y1, int x2, int y2) {
@@ -81,8 +97,11 @@ void Map::dig(int x1, int y1, int x2, int y2) {
 	}
 
 	for (int x = x1; x < x2; x++)
-		for (int y = y1; y < y2; y++)
+		for (int y = y1; y < y2; y++) {
 			setFloor(x, y);
+			t_map->setProperties(x, y, true, true);
+		}
+			
 }
 
 void Map::createRoom(int x1, int y1, int x2, int y2) {
@@ -94,7 +113,7 @@ void Map::createRoom(int x1, int y1, int x2, int y2) {
 	rooms.push_back(new Room{ x1, y1, x2-1, y2-1 });
 }
 
-bool Map::roomIsClosed(Room* room) {
+bool Map::roomIsClosed(Room* room) const {
 	// North and South
 	for (auto x = room->x1; x < room->x2; x++)
 		if (tiles[x + (room->y1 - 1) * width]->ch == '.' || tiles[x + (room->y2) * width]->ch == '.')
@@ -106,7 +125,7 @@ bool Map::roomIsClosed(Room* room) {
 	return true;
 }
 
-bool Map::wallHasDoor(Room* room, direction direction) {
+bool Map::wallHasDoor(Room* room, direction direction) const {
 
 	switch (direction) {
 		case NORTH:
@@ -143,7 +162,7 @@ bool Map::wallHasDoor(Room* room, direction direction) {
 	}
 }
 
-bool Map::isIntersection(int x, int y, direction dir) {
+bool Map::isIntersection(int x, int y, direction dir) const {
 	if (dir == NORTH || dir == SOUTH)
 		if (tiles[x + (y - 1) * width]->ch == '#' || tiles[x + (y + 1) * width]->ch == '#')
 			return true;
@@ -180,24 +199,20 @@ void Map::createDoorsRandom() {
 					switch (i) {
 						case 0:
 							if ((*it)->y1 > 0) {
-								tiles[pos + (*it)->y1 * width]->can_walk = true;
-								tiles[pos + (*it)->y1 * width]->ch = '.';
+								setFloor(pos, (*it)->y1);
 							}	
 						case 1:
 							if ((*it)->x2 < width - 1) {
-								tiles[(*it)->x2 + pos * width]->can_walk = true;
-								tiles[(*it)->x2 + pos * width]->ch = '.';
+								setFloor((*it)->x2, pos);
 							}
 							
 						case 2:
 							if ((*it)->y2 > height - 1) {
-								tiles[pos + (*it)->y2 * width]->can_walk = true;
-								tiles[pos + (*it)->y2 * width]->ch = '.';
+								setFloor(pos, (*it)->y2);
 							}
 						case 3:
 							if ((*it)->x1 > 0) {
-								tiles[(*it)->x1 + pos * width]->can_walk = true;
-								tiles[(*it)->x1 + pos * width]->ch = '.';
+								setFloor((*it)->x1, pos);
 							}
 					}
 				}
@@ -228,9 +243,8 @@ void Map::createDoorsAll() {
 						if ((*it)->y1 > 1) {
 							while (isIntersection(pos, (*it)->y1 - 1, direction(i)))
 								pos = (*it)->x1 + rand() % ((*it)->x2 + 1 - (*it)->x1);
-								
-							tiles[pos + ((*it)->y1 - 1) * width]->can_walk = true;
-							tiles[pos + ((*it)->y1 - 1) * width]->ch = '.';
+							
+							setFloor(pos, (*it)->y1 - 1);
 						}
 						break;
 
@@ -240,8 +254,7 @@ void Map::createDoorsAll() {
 							while (isIntersection((*it)->x2 + 1, pos, direction(i)))
 								pos = (*it)->y1 + rand() % ((*it)->y2 + 1 - (*it)->y1);
 
-							tiles[((*it)->x2 + 1) + pos * width]->can_walk = true;
-							tiles[((*it)->x2 + 1) + pos * width]->ch = '.';
+							setFloor((*it)->x2 + 1, pos);
 						}
 						break;
 
@@ -251,8 +264,7 @@ void Map::createDoorsAll() {
 							while (isIntersection(pos, (*it)->y2 + 1, direction(i)))
 								pos = (*it)->x1 + rand() % ((*it)->x2 + 1 - (*it)->x1);
 								
-							tiles[pos + ((*it)->y2 + 1) * width]->can_walk = true;
-							tiles[pos + ((*it)->y2 + 1) * width]->ch = '.';							
+							setFloor(pos, (*it)->y2 + 1);
 						}
 						break;
 
@@ -262,8 +274,7 @@ void Map::createDoorsAll() {
 							while (isIntersection((*it)->x1 - 1, pos, direction(i)))
 								pos = (*it)->y1 + rand() % ((*it)->y2 + 1 - (*it)->y1);
 								
-							tiles[((*it)->x1 - 1) + pos * width]->can_walk = true;
-							tiles[((*it)->x1 - 1) + pos * width]->ch = '.';
+							setFloor((*it)->x1 - 1, pos);
 							
 						}
 						break;
@@ -272,17 +283,31 @@ void Map::createDoorsAll() {
 		}
 	}
 }
+
 void Map::render() const {
-	static const TCODColor darkWall(150, 150, 200);
-	static const TCODColor darkGround(50, 50, 150);
+	static const TCODColor darkWall(75, 75, 50);
+	static const TCODColor darkGround(50, 50, 25);
+	static const TCODColor lightWall(150, 150, 200);
+	static const TCODColor lightGround(50, 50, 150);
 
 	for (int x = 0; x < width; x++) {
 		for (int y = 0; y < height; y++) {
-			TCODConsole::root->setChar(x, y, tiles[x + y * width]->ch);
-			if (tiles[x + y * width]->ch == '#')
-				TCODConsole::root->setCharForeground(x, y, darkWall);
-			else
-				TCODConsole::root->setCharForeground(x, y, darkGround);
+			if (isInFov(x, y)) {		
+				TCODConsole::root->setChar(x, y, tiles[x + y * width]->ch);
+				if (tiles[x + y * width]->ch == '#')
+					TCODConsole::root->setCharForeground(x, y, lightWall);
+				else if (tiles[x + y * width]->ch == '.')
+					TCODConsole::root->setCharForeground(x, y, lightGround);
+			}
+
+			else if (isExplored(x, y)) {
+				TCODConsole::root->setChar(x, y, tiles[x + y * width]->ch);
+				if (tiles[x + y * width]->ch == '#')
+					TCODConsole::root->setCharForeground(x, y, darkWall);
+					
+				else if (tiles[x + y * width]->ch == '.')
+					TCODConsole::root->setCharForeground(x, y, darkGround);
+			}
 		}
 	}	
 }

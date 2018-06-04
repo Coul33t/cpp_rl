@@ -20,6 +20,9 @@ class Engine {
 		std::vector<Actor*> actors;
 		Actor* player;
 		Map* map;
+
+		int fov_radius;
+		bool compute_fov;
 };
 
 #endif // __ENGINE__
