@@ -51,6 +51,10 @@ Map::~Map() {
 	delete t_map;
 }
 
+std::vector<Room*>& Map::getRooms() {
+	return rooms;
+}
+
 bool Map::isWalkable(int x, int y) const {
 	return tiles[x + y * width]->can_walk;
 }

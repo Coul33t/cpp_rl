@@ -26,6 +26,7 @@ class Map {
 		Map(int w, int h);
 		~Map();
 
+		std::vector<Room*>& getRooms();
 		std::pair<int, int> getRoomCenter(int room_idx);
 		void computeFov(int p_x, int p_y, int radius);
 		bool isInFov(int x, int y) const;
