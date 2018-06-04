@@ -71,7 +71,13 @@ void Engine::update() {
 				player->move(-1, -1);
 			}
 			break;
-		
+
+		case TCODK_F3:
+			delete map;
+			map = new Map(70, 45);
+			player->setCoordinates(map->getRoomCenter(0));
+			break;
+
 		default:
 			break;
 	}

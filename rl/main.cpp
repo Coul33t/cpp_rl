@@ -1,5 +1,5 @@
 #include <iostream>
-#include "libtcod.hpp"
+#include "../lib/libtcod/include/libtcod.hpp"
 
 #include "Engine.h"
 

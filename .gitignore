@@ -3,13 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-*.sln
-*.vcxproj
-*.vcxproj.filters
-.kdev4/
-.vs/
-*.kdev4
-
 # User-specific files
 *.suo
 *.user
