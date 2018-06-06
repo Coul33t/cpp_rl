@@ -3,6 +3,7 @@
 
 #include <string>
 #include <utility> 
+#include <iostream>
 #include "libtcod.hpp"
 
 class Actor {
@@ -15,8 +16,9 @@ class Actor {
 	public:
 		Actor(int x, int y, std::string name, int ch, TCODColor col);
 
-		int getX() const;
-		int getY() const;
+		const int getX() const;
+		const int getY() const;
+		const std::string& getName() const;
 
 		void setX(int x);
 		void setY(int y);

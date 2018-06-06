@@ -1,16 +1,16 @@
 #include "Engine.h"
 
-Engine::Engine() {
+Engine::Engine(): game_status(STARTUP) {
 	TCODConsole::setCustomFont("Anikki_square_16x16.png", TCOD_FONT_LAYOUT_ASCII_INROW);
 	TCODConsole::initRoot(80, 50, "libtcod C++ tutorial", false);
-	player = new Actor(0, 0, "Player", '@', TCODColor::white);
-	actors.push_back(player);
+	
 	map = new Map(70, 45);
+
+	player = new Actor(0, 0, "Player", '@', TCODColor::white);
 	player->setCoordinates(map->getRoomCenter(0));
+	actors.push_back(player);
 
 	fov_radius = 20;
-	compute_fov = true;
-	map->computeFov(player->getX(), player->getY(), fov_radius);
 
 	populateDungeon();
 }
@@ -80,49 +80,71 @@ bool Engine::canWalk(int x, int y) const {
 	return true;
 }
 
+bool Engine::move(Actor* actor, int dx, int dy) {
+	if (canWalk(actor->getX() + dx, actor->getY() + dy)) {
+		actor->move(dx, dy);
+		return true;
+	}
+
+	else {
+		for (auto it = actors.begin(); it != actors.end(); it++) {
+			if (((*it) != player) && ((*it)->getX() == (actor->getX() + dx) || (*it)->getY() == (actor->getY() + dy))) {
+				actor->attack((*it));
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void Engine::update() {
+
+	if (game_status == STARTUP)
+		map->computeFov(player->getX(), player->getY(), fov_radius);
+
+	game_status = IDLE;
+
 	TCOD_key_t key;
 	TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS, &key, NULL);
 
+	int dx = 0, dy = 0;
+
 	switch (key.vk) {
 		case TCODK_KP8:
-			move(player, 0, -1);
-			compute_fov = true;
+			dy = -1;
 			break;
 
 		case TCODK_KP9:
-			move(player, 1, -1);
-			compute_fov = true;
+			dx = 1;
+			dy = -1;
 			break;
 
 		case TCODK_KP6:
-			move(player, 1, 0);
-			compute_fov = true;
+			dx = 1;
 			break;
 
 		case TCODK_KP3:
-			move(player, 1, 1);
-			compute_fov = true;
+			dx = 1;
+			dy = 1;
 			break;
 		
 		case TCODK_KP2:
-			move(player, 0, 1);
-			compute_fov = true;
+			dy = 1;
 			break;
 
 		case TCODK_KP1:
-			move(player, -1, 1);
-			compute_fov = true;
+			dx = -1;
+			dy = 1;
 			break;
 		
 		case TCODK_KP4:
-			move(player, -1, 0);
-			compute_fov = true;
+			dx = -1;
 			break;
 
 		case TCODK_KP7:
-			move(player, -1, -1);
-			compute_fov = true;
+			dx = -1;
+			dy = -1;
 			break;
 
 		case TCODK_F3:
@@ -135,9 +157,16 @@ void Engine::update() {
 			break;
 	}
 
-	if (compute_fov) {
-		map->computeFov(player->getX(), player->getY(), fov_radius);
-		compute_fov = false;
+	if (dx != 0 || dy != 0) {
+		game_status = NEW_TURN;
+		if (move(player, dx, dy))
+			map->computeFov(player->getX(), player->getY(), fov_radius);
+	}
+
+	if (game_status == NEW_TURN) {
+		for (auto it = actors.begin(); it != actors.end(); it++)
+			if ((*it) != player)
+				(*it)->update();
 	}
 }
 

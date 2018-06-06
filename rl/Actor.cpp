@@ -15,12 +15,16 @@ void Actor::move(int dx, int dy) {
 	this->y += dy;
 }
 
-int Actor::getX() const {
+const int Actor::getX() const {
 	return x;
 }
 
-int Actor::getY() const {
+const int Actor::getY() const {
 	return y;
+}
+
+const std::string& Actor::getName() const {
+	return name;
 }
 
 void Actor::setX(int x) {
@@ -40,9 +44,9 @@ void Actor::setCoordinates(std::pair<int, int> new_coord) {
 }
 
 void Actor::attack(Actor* target) {
-
+	std::cout << this->getName() << " attacks the " << target->getName() << "!" << std::endl;
 }
 
 void Actor::update() {
-
+	//std::cout << "Actor " << this->name << " updated." << std::endl;
 }

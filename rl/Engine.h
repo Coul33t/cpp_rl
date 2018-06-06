@@ -8,6 +8,15 @@
 
 class Engine {
 	public:
+		
+		enum GameStatus {
+			STARTUP,
+			IDLE,
+			NEW_TURN,
+			VICTORY,
+			DEFEAT
+		} game_status;
+
 		Engine();
 		~Engine();
 
@@ -27,7 +36,6 @@ class Engine {
 		Map* map;
 
 		int fov_radius;
-		bool compute_fov;
 
 		bool move(Actor*, int dx, int dy);
 		static const int CLUSTER_THRESHOLD = 20;
