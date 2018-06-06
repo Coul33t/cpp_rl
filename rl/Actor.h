@@ -4,24 +4,25 @@
 #include <string>
 #include <utility> 
 #include <iostream>
-#include "libtcod.hpp"
 
 class Actor {
-	private:
+	// Not gonna lie, having accessors that does nothing else than returning references
+	// to the variables or modifying them without any form of check is pointless to me. 
+	// My code isn't to be used by someone else than me, and I (kinda) know what I'm doing
+	// (and what I can do) with my objects. Bloating my code with player->getX() instead of 
+	// player->x is boring and tedious.
+	public:
 		int x, y;
 		std::string name;
 		int ch;
 		TCODColor col;
+		bool blocks;
+		bool is_dead;
+
+		Destructible* destructible;
 
 	public:
 		Actor(int x, int y, std::string name, int ch, TCODColor col);
-
-		const int getX() const;
-		const int getY() const;
-		const std::string& getName() const;
-
-		void setX(int x);
-		void setY(int y);
 
 		std::pair<int, int> getCoordinates();
 		void setCoordinates(std::pair<int, int>);

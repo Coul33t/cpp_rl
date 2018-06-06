@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "libtcod.hpp"
-
 struct Tile {
 	int ch;
 	bool can_walk;

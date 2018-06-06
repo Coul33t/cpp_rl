@@ -1,11 +1,11 @@
-#include "Engine.h"
+#include "Main.h"
 
 Engine::Engine(): game_status(STARTUP) {
 	TCODConsole::setCustomFont("Anikki_square_16x16.png", TCOD_FONT_LAYOUT_ASCII_INROW);
 	TCODConsole::initRoot(80, 50, "libtcod C++ tutorial", false);
 	
 	map = new Map(70, 45);
-
+	TCODColor my_color(255, 255, 255);
 	player = new Actor(0, 0, "Player", '@', TCODColor::white);
 	player->setCoordinates(map->getRoomCenter(0));
 	actors.push_back(player);
@@ -74,21 +74,21 @@ bool Engine::canWalk(int x, int y) const {
 		return false;
 
 	for (auto it = actors.begin(); it != actors.end(); it++)
-		if ((*it)->getX() == x && (*it)->getY() == y)
+		if (((*it)->x == x && (*it)->y == y) && ((*it)->blocks))
 			return false;
 
 	return true;
 }
 
 bool Engine::move(Actor* actor, int dx, int dy) {
-	if (canWalk(actor->getX() + dx, actor->getY() + dy)) {
+	if (canWalk(actor->x + dx, actor->y + dy)) {
 		actor->move(dx, dy);
 		return true;
 	}
 
 	else {
 		for (auto it = actors.begin(); it != actors.end(); it++) {
-			if (((*it) != player) && ((*it)->getX() == (actor->getX() + dx) || (*it)->getY() == (actor->getY() + dy))) {
+			if (((*it) != player) && ((*it)->x == (actor->x + dx) || (*it)->y == (actor->y + dy))) {
 				actor->attack((*it));
 				return true;
 			}
@@ -98,10 +98,19 @@ bool Engine::move(Actor* actor, int dx, int dy) {
 	return false;
 }
 
+void Engine::sendToBack(Actor* actor) {
+	for (auto it = actors.begin(); it != actors.end(); it++) {
+		if ((*it) == actor) {
+			actors.erase(it);
+			actors.insert(actors.begin(), actor);
+		}
+	}
+}
+
 void Engine::update() {
 
 	if (game_status == STARTUP)
-		map->computeFov(player->getX(), player->getY(), fov_radius);
+		map->computeFov(player->x, player->y, fov_radius);
 
 	game_status = IDLE;
 
@@ -160,13 +169,22 @@ void Engine::update() {
 	if (dx != 0 || dy != 0) {
 		game_status = NEW_TURN;
 		if (move(player, dx, dy))
-			map->computeFov(player->getX(), player->getY(), fov_radius);
+			map->computeFov(player->x, player->y, fov_radius);
 	}
 
 	if (game_status == NEW_TURN) {
 		for (auto it = actors.begin(); it != actors.end(); it++)
 			if ((*it) != player)
 				(*it)->update();
+
+		for (auto it = actors.begin(); it != actors.end(); it++) {
+			if ((*it)->is_dead) {
+				sendToBack(*it);
+				if (*it == player)
+					game_status = DEFEAT;
+			}
+				
+		}
 	}
 }
 
@@ -175,6 +193,6 @@ void Engine::render() {
 	map->render();
 
 	for (auto it = actors.begin(); it != actors.end(); it++)
-		if (map->isInFov((*it)->getX(), (*it)->getY()))
+		if (map->isInFov((*it)->x, (*it)->y))
 			(*it)->render();
 }

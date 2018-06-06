@@ -2,9 +2,8 @@
 #define __ENGINE__
 
 #include <iostream>
-#include "libtcod.hpp"
-#include "Actor.h"
-#include "Map.h"
+#include <algorithm>
+#include <vector>
 
 class Engine {
 	public:
@@ -38,6 +37,9 @@ class Engine {
 		int fov_radius;
 
 		bool move(Actor*, int dx, int dy);
+
+		void sendToBack(Actor* actor);
+
 		static const int CLUSTER_THRESHOLD = 20;
 };
 

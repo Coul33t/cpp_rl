@@ -1,7 +1,7 @@
-#include "Actor.h"
+#include "Main.h"
 
 Actor::Actor(int x, int y, std::string name, int ch, TCODColor colour) :
-	x(x), y(y), name(name), ch(ch), col(col) {
+	x(x), y(y), name(name), ch(ch), col(col), blocks(true), is_dead(false) {
 
 }
 
@@ -15,26 +15,6 @@ void Actor::move(int dx, int dy) {
 	this->y += dy;
 }
 
-const int Actor::getX() const {
-	return x;
-}
-
-const int Actor::getY() const {
-	return y;
-}
-
-const std::string& Actor::getName() const {
-	return name;
-}
-
-void Actor::setX(int x) {
-	this->x = x;
-}
-
-void Actor::setY(int y) {
-	this->y = y;
-}
-
 std::pair<int, int> Actor::getCoordinates() {
 	return std::pair<int, int>(x, y);
 }
@@ -44,7 +24,7 @@ void Actor::setCoordinates(std::pair<int, int> new_coord) {
 }
 
 void Actor::attack(Actor* target) {
-	std::cout << this->getName() << " attacks the " << target->getName() << "!" << std::endl;
+	std::cout << this->name << " attacks the " << target->name << "!" << std::endl;
 }
 
 void Actor::update() {

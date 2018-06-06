@@ -20,13 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Destructible.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Destructible.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="Map.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
