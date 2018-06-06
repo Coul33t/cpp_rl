@@ -29,8 +29,11 @@ class Engine {
 		int fov_radius;
 		bool compute_fov;
 
+<<<<<<< HEAD
 		bool move(Actor*, int dx, int dy);
+=======
 		static const int CLUSTER_THRESHOLD = 20;
+>>>>>>> 63125cef93e1ebc42564ed575026e66683b24211
 };
 
 #endif // __ENGINE__

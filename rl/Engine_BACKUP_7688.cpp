@@ -80,12 +80,31 @@ bool Engine::canWalk(int x, int y) const {
 	return true;
 }
 
+bool Engine::move(Actor* actor, int dx, int dy) {
+	if (map->isWalkable(actor->getX() + dx, actor->getY() + dy)) {
+		actor->move(dx, dy);
+		return true;
+	}
+
+	else {
+		for (auto it = actors.begin(); it != actors.end(); it++) {
+			if ((*it)->getX() == (actor->getX() + dx) || (*it)->getY() == (actor->getY() + dy)) {
+				actor->attack((*it));
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void Engine::update() {
 	TCOD_key_t key;
 	TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS, &key, NULL);
 
 	switch (key.vk) {
 		case TCODK_KP8:
+<<<<<<< HEAD
 			move(player, 0, -1);
 			compute_fov = true;
 			break;
@@ -123,6 +142,61 @@ void Engine::update() {
 		case TCODK_KP7:
 			move(player, -1, -1);
 			compute_fov = true;
+=======
+			if (canWalk(player->getX(), player->getY() - 1)) {
+				player->move(0, -1);
+				compute_fov = true;
+			}
+			break;
+
+		case TCODK_KP9:
+			if (canWalk(player->getX() + 1, player->getY() - 1)) {
+				player->move(1, -1);
+				compute_fov = true;
+			}
+			break;
+
+		case TCODK_KP6:
+			if (canWalk(player->getX() + 1, player->getY())) {
+				player->move(1, 0);
+				compute_fov = true;
+			}
+			break;
+
+		case TCODK_KP3:
+			if (canWalk(player->getX() + 1, player->getY() + 1)) {
+				player->move(1, 1);
+				compute_fov = true;
+			}
+			break;
+		
+		case TCODK_KP2:
+			if (canWalk(player->getX(), player->getY() + 1)) {
+				player->move(0, 1);
+				compute_fov = true;
+			}
+			break;
+
+		case TCODK_KP1:
+			if (canWalk(player->getX() - 1, player->getY() + 1)) {
+				player->move(-1, 1);
+				compute_fov = true;
+			}
+			break;
+		
+		case TCODK_KP4:
+			if (canWalk(player->getX() - 1, player->getY())) {
+				player->move(-1, 0);
+				compute_fov = true;
+			}
+			break;
+
+		case TCODK_KP7:
+			if (canWalk(player->getX() - 1, player->getY() - 1)) {
+				player->move(-1, -1);
+				compute_fov = true;
+			}
+>>>>>>> 63125cef93e1ebc42564ed575026e66683b24211
 			break;
 
 		case TCODK_F3:

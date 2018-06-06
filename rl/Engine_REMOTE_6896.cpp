@@ -86,43 +86,59 @@ void Engine::update() {
 
 	switch (key.vk) {
 		case TCODK_KP8:
-			move(player, 0, -1);
-			compute_fov = true;
+			if (canWalk(player->getX(), player->getY() - 1)) {
+				player->move(0, -1);
+				compute_fov = true;
+			}
 			break;
 
 		case TCODK_KP9:
-			move(player, 1, -1);
-			compute_fov = true;
+			if (canWalk(player->getX() + 1, player->getY() - 1)) {
+				player->move(1, -1);
+				compute_fov = true;
+			}
 			break;
 
 		case TCODK_KP6:
-			move(player, 1, 0);
-			compute_fov = true;
+			if (canWalk(player->getX() + 1, player->getY())) {
+				player->move(1, 0);
+				compute_fov = true;
+			}
 			break;
 
 		case TCODK_KP3:
-			move(player, 1, 1);
-			compute_fov = true;
+			if (canWalk(player->getX() + 1, player->getY() + 1)) {
+				player->move(1, 1);
+				compute_fov = true;
+			}
 			break;
 		
 		case TCODK_KP2:
-			move(player, 0, 1);
-			compute_fov = true;
+			if (canWalk(player->getX(), player->getY() + 1)) {
+				player->move(0, 1);
+				compute_fov = true;
+			}
 			break;
 
 		case TCODK_KP1:
-			move(player, -1, 1);
-			compute_fov = true;
+			if (canWalk(player->getX() - 1, player->getY() + 1)) {
+				player->move(-1, 1);
+				compute_fov = true;
+			}
 			break;
 		
 		case TCODK_KP4:
-			move(player, -1, 0);
-			compute_fov = true;
+			if (canWalk(player->getX() - 1, player->getY())) {
+				player->move(-1, 0);
+				compute_fov = true;
+			}
 			break;
 
 		case TCODK_KP7:
-			move(player, -1, -1);
-			compute_fov = true;
+			if (canWalk(player->getX() - 1, player->getY() - 1)) {
+				player->move(-1, -1);
+				compute_fov = true;
+			}
 			break;
 
 		case TCODK_F3:
