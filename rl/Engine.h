@@ -25,6 +25,8 @@ class Engine {
 
 		int fov_radius;
 		bool compute_fov;
+
+		bool move(Actor*, int dx, int dy);
 };
 
 #endif // __ENGINE__

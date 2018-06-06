@@ -13,10 +13,7 @@ class Actor {
 		TCODColor col;
 
 	public:
-	Actor(int x, int y, std::string name, int ch, TCODColor col);
-		void render() const;
-
-		void move(int dx, int dy);
+		Actor(int x, int y, std::string name, int ch, TCODColor col);
 
 		int getX() const;
 		int getY() const;
@@ -26,6 +23,13 @@ class Actor {
 
 		std::pair<int, int> getCoordinates();
 		void setCoordinates(std::pair<int, int>);
+
+		void move(int dx, int dy);
+		void attack(Actor* target);
+
+		void render() const;
+		void update();
+		
 
 };
 

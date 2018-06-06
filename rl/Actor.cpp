@@ -38,3 +38,11 @@ void Actor::setCoordinates(std::pair<int, int> new_coord) {
 	x = new_coord.first;
 	y = new_coord.second;
 }
+
+void Actor::attack(Actor* target) {
+
+}
+
+void Actor::update() {
+
+}
