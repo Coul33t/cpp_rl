@@ -1,6 +1,6 @@
 /*
-* libtcod 1.5.1
-* Copyright (c) 2008,2009,2010,2012 Jice & Mingos
+* libtcod
+* Copyright (c) 2008-2018 Jice & Mingos & rmtew
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -10,13 +10,14 @@
 *     * Redistributions in binary form must reproduce the above copyright
 *       notice, this list of conditions and the following disclaimer in the
 *       documentation and/or other materials provided with the distribution.
-*     * The name of Jice or Mingos may not be used to endorse or promote products
-*       derived from this software without specific prior written permission.
+*     * The name of Jice or Mingos may not be used to endorse or promote
+*       products derived from this software without specific prior written
+*       permission.
 *
-* THIS SOFTWARE IS PROVIDED BY JICE AND MINGOS ``AS IS'' AND ANY
+* THIS SOFTWARE IS PROVIDED BY JICE, MINGOS AND RMTEW ``AS IS'' AND ANY
 * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL JICE OR MINGOS BE LIABLE FOR ANY
+* DISCLAIMED. IN NO EVENT SHALL JICE, MINGOS OR RMTEW BE LIABLE FOR ANY
 * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -24,10 +25,11 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #ifndef _TCOD_COLOR_HPP
 #define _TCOD_COLOR_HPP
 
+#include "color.h"
+#include "libtcod_utility.h"
 // color constants uses to generate @ColorTable
 /**
 	@ColorCategory STANDARD COLORS
@@ -76,7 +78,7 @@
 A color is defined by its red, green and blue component between 0 and 255.
 You can use the following predefined colors (hover over a color to see its full name and R,G,B values):
 	@ColorTable
-	@CppEx 
+	@CppEx
 		TCODColor::desaturatedRed
 		TCODColor::lightestRed
 		TCODColor::lighterRed
@@ -85,7 +87,7 @@ You can use the following predefined colors (hover over a color to see its full 
 		TCODColor::darkRed
 		TCODColor::darkerRed
 		TCODColor::darkestRed
-	@CEx 
+	@CEx
 		TCOD_desaturated_red
 		TCOD_lightest_red
 		TCOD_lighter_red
@@ -94,7 +96,7 @@ You can use the following predefined colors (hover over a color to see its full 
 		TCOD_dark_red
 		TCOD_darker_red
 		TCOD_darkest_red
-	@PyEx 
+	@PyEx
 		libtcod.desaturated_red
 		libtcod.lightest_red
 		libtcod.lighter_red
@@ -103,7 +105,7 @@ You can use the following predefined colors (hover over a color to see its full 
 		libtcod.dark_red
 		libtcod.darker_red
 		libtcod.darkest_red
-	@C#Ex 
+	@C#Ex
 		TCODColor::desaturatedRed
 		TCODColor::lightestRed
 		TCODColor::lighterRed
@@ -125,17 +127,17 @@ You can use the following predefined colors (hover over a color to see its full 
 
 class TCODLIB_API TCODColor {
 public :
-	uint8 r,g,b;
+	uint8_t r,g,b;
 
 	TCODColor() : r(0),g(0),b(0) {}
 	/**
 	@PageName color
 	@FuncTitle Create your own colors
 	@FuncDesc You can create your own colours using a set of constructors, both for RGB and HSV values.
-	@CppEx 
+	@CppEx
 		TCODColor myColor(24,64,255); //RGB
 		TCODColor myOtherColor(321.0f,0.7f,1.0f); //HSV
-	@CEx 
+	@CEx
 		TCOD_color_t my_color={24,64,255}; <span>/</span>* RGB *<span>/</span>
 		TCOD_color_t my_other_color = TCOD_color_RGB(24,64,255); <span>/</span>* RGB too *<span>/</span>
 		TCOD_color_t my_yet_another_color = TCOD_color_HSV(321.0f,0.7f,1.0f); <span>/</span>* HSV *<span>/</span>
@@ -144,7 +146,7 @@ public :
 	     TCODColor myColor = new TCODColor(321.0f,0.7f,1.0f); //HSV
 	@LuaEx myColor = tcod.Color(24,24,255)
 	*/
-	TCODColor(uint8 r, uint8 g, uint8 b): r(r), g(g), b(b) {}
+	TCODColor(uint8_t r, uint8_t g, uint8_t b): r(r), g(g), b(b) {}
 	TCODColor(int r, int g, int b): r(r), g(g), b(b) {}
 	TCODColor(const TCOD_color_t &col): r(col.r), g(col.g), b(col.b) {}
 	TCODColor(float h, float s, float v);
@@ -152,19 +154,19 @@ public :
 	/**
 	@PageName color
 	@FuncTitle Compare two colors
-	@CppEx 
+	@CppEx
 		if (myColor == TCODColor::yellow) { ... }
 		if (myColor != TCODColor::white) { ... }
-	@CEx 
+	@CEx
 		if (TCOD_color_equals(my_color,TCOD_yellow)) { ... }
 		if (!TCOD_color_equals(my_color,TCOD_white)) { ... }
-	@PyEx 
+	@PyEx
 		if my_color == libtcod.yellow : ...
 		if my_color != litbcod.white : ...
-	@C#Ex 
+	@C#Ex
 		if (myColor.Equal(TCODColor.yellow)) { ... }
 		if (myColor.NotEqual(TCODColor.white)) { ... }
-	@LuaEx 
+	@LuaEx
 		if myColor == tcod.color.yellow then ... end
 	*/
 	bool operator == (const TCODColor & c) const {
@@ -191,9 +193,9 @@ public :
 	*/
 	TCODColor operator * (const TCODColor & a) const {
 		TCODColor ret;
-		ret.r=(uint8)(((int)r)*a.r/255);
-		ret.g=(uint8)(((int)g)*a.g/255);
-		ret.b=(uint8)(((int)b)*a.b/255);
+		ret.r=(uint8_t)(((int)r)*a.r/255);
+		ret.g=(uint8_t)(((int)g)*a.g/255);
+		ret.b=(uint8_t)(((int)b)*a.b/255);
 		return ret;
 	}
 
@@ -222,9 +224,9 @@ public :
 		r = CLAMP(0,255,r);
 		g = CLAMP(0,255,g);
 		b = CLAMP(0,255,b);
-		ret.r=(uint8)r;
-		ret.g=(uint8)g;
-		ret.b=(uint8)b;
+		ret.r=(uint8_t)r;
+		ret.g=(uint8_t)g;
+		ret.b=(uint8_t)b;
 		return ret;
 	}
 
@@ -250,9 +252,9 @@ public :
 		r = MIN(255,r);
 		g = MIN(255,g);
 		b = MIN(255,b);
-		ret.r=(uint8)r;
-		ret.g=(uint8)g;
-		ret.b=(uint8)b;
+		ret.r=(uint8_t)r;
+		ret.g=(uint8_t)g;
+		ret.b=(uint8_t)b;
 		return ret;
 	}
 
@@ -278,9 +280,9 @@ public :
 		r = MAX(0,r);
 		g = MAX(0,g);
 		b = MAX(0,b);
-		ret.r=(uint8)r;
-		ret.g=(uint8)g;
-		ret.b=(uint8)b;
+		ret.r=(uint8_t)r;
+		ret.g=(uint8_t)g;
+		ret.b=(uint8_t)b;
 		return ret;
 	}
 
@@ -305,9 +307,9 @@ coef should be between 0.0 and 1.0 but you can as well use other values
 	*/
 	static TCODColor lerp(const TCODColor &a, const TCODColor &b, float coef) {
 		TCODColor ret;
-		ret.r=(uint8)(a.r+(b.r-a.r)*coef);
-		ret.g=(uint8)(a.g+(b.g-a.g)*coef);
-		ret.b=(uint8)(a.b+(b.b-a.b)*coef);
+		ret.r=(uint8_t)(a.r+(b.r-a.r)*coef);
+		ret.g=(uint8_t)(a.g+(b.g-a.g)*coef);
+		ret.b=(uint8_t)(a.b+(b.b-a.b)*coef);
 		return ret;
 	}
 
@@ -320,7 +322,7 @@ coef should be between 0.0 and 1.0 but you can as well use other values
 	@Py color_set_hsv(c,h,s,v)
 	@C# void TCODColor::setHSV(float h, float s, float v)
 	@Lua Color:setHSV( h, s ,v )
-	@Param c In the C and python versions, the color to modify
+	@Param c In the C and Python versions, the color to modify
 	@Param h,s,v Color components in the HSV space
 		0.0 <= h < 360.0
 		0.0 <= s <= 1.0
@@ -332,20 +334,20 @@ coef should be between 0.0 and 1.0 but you can as well use other values
 	@PageName color
 	@FuncTitle Define a color's hue, saturation or lightness
 	@FuncDesc These functions set only a single component in the HSV color space.
-	@Cpp 
+	@Cpp
 		void TCODColor::setHue (float h)
 		void TCODColor::setSaturation (float s)
 		void TCODColor::setValue (float v)
-	@C 
+	@C
 		void TCOD_color_set_hue (TCOD_color_t *c, float h)
 		void TCOD_color_set_saturation (TCOD_color_t *c, float s)
 		void TCOD_color_set_value (TCOD_color_t *c, float v)
-	@Lua 
+	@Lua
 		Color:setHue(h)
 		Color:setSaturation(s)
 		Color:setValue(v)
 	@Param h,s,v	Color components in the HSV space
-	@Param c	In the C and python versions, the color to modify
+	@Param c	In the C and Python versions, the color to modify
 	*/
 	void setHue (float h);
 	void setSaturation (float s);
@@ -359,7 +361,7 @@ coef should be between 0.0 and 1.0 but you can as well use other values
 	@Py color_get_HSV(c) # returns [h,s,v]
 	@C# void TCODColor::getHSV(out float h, out float s, out float v)
 	@Lua Color:getHSV() -- returns h,s,v
-	@Param c	In the C and python versions, the TCOD_color_t from which to read.
+	@Param c	In the C and Python versions, the TCOD_color_t from which to read.
 	@Param  h,s,v	Color components in the HSV space
 		0.0 <= h < 360.0
 		0.0 <= s <= 1.0
@@ -371,11 +373,11 @@ coef should be between 0.0 and 1.0 but you can as well use other values
 	@PageName color
 	@FuncTitle Get a color's hue, saturation or value
 	@FuncDesc Should you need to extract only one of the HSV components, these functions are what you should call. Note that if you need all three values, it's way less burdensome for the CPU to call TCODColor::getHSV().
-	@Cpp 
+	@Cpp
 		float TCODColor::getHue ()
 		float TCODColor::getSaturation ()
 		float TCODColor::getValue ()
-	@C 
+	@C
 		float TCOD_color_get_hue (TCOD_color_t c)
 		float TCOD_color_get_saturation (TCOD_color_t c)
 		float TCOD_color_get_value (TCOD_color_t c)
@@ -450,17 +452,17 @@ coef should be between 0.0 and 1.0 but you can as well use other values
 	@Param keyColor	Array of nbKey colors containing the color of each key
 	@Param keyIndex	Array of nbKey integers containing the index of each key.
 		If you want to fill the map array, keyIndex[0] must be 0 and keyIndex[nbKey-1] is the number of elements in map minus 1 but you can also use the function to fill only a part of the map array.
-	@CppEx 
+	@CppEx
 		int idx[] = { 0, 4, 8 }; // indexes of the keys
 		TCODColor col[] = { TCODColor( 0,0,0 ), TCODColor(255,0,0), TCODColor(255,255,255) }; // colors : black, red, white
 		TCODColor map[9];
 		TCODColor::genMap(map,3,col,idx);
-	@CEx 
+	@CEx
 		int idx[] = { 0, 4, 8 }; // indexes of the keys
 		TCOD_color_t col[] = { { 0,0,0 }, {255,0,0}, {255,255,255} }; // colors : black, red, white
 		TCOD_color_t map[9];
 		TCOD_color_gen_map(map,3,col,idx);
-	@PyEx 
+	@PyEx
 		idx = [ 0, 4, 8 ] # indexes of the keys
 		col = [ libtcod.Color( 0,0,0 ), libtcod.Color( 255,0,0 ), libtcod.Color(255,255,255) ] # colors : black, red, white
 		map=libtcod.color_gen_map(col,idx)

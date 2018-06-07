@@ -18,7 +18,7 @@ class Engine {
 			NEW_TURN,
 			VICTORY,
 			DEFEAT
-		} game_status;
+		};
 
 		Engine();
 		~Engine();
@@ -45,4 +45,6 @@ class Engine {
 		void sendToBack(Actor* actor);
 
 		static const int CLUSTER_THRESHOLD = 20;
+
+		GameStatus game_status;
 };

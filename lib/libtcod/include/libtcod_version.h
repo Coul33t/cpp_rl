@@ -25,27 +25,13 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef _TCOD_MOUSE_H
-#define _TCOD_MOUSE_H
+#ifndef LIBTCOD_VERSION_H
+#define LIBTCOD_VERSION_H
 
-#include "libtcod_portability.h"
+#define TCOD_HEXVERSION 0x010607
+#define TCOD_STRVERSION "1.6.7"
+#define TCOD_TECHVERSION 0x01060700
 
-#ifdef TCOD_CONSOLE_SUPPORT
+#define TCOD_STRVERSIONNAME "libtcod "TCOD_STRVERSION
 
-#include "mouse_types.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-TCODLIB_API void TCOD_mouse_show_cursor(bool visible);
-TCODLIB_API TCOD_mouse_t TCOD_mouse_get_status(void);
-TCODLIB_API bool TCOD_mouse_is_cursor_visible(void);
-TCODLIB_API void TCOD_mouse_move(int x, int y);
-TCODLIB_API void TCOD_mouse_includes_touch(bool enable);
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* TCOD_CONSOLE_SUPPORT */
-
-#endif /* _TCOD_MOUSE_H */
+#endif /* LIBTCOD_VERSION_H */

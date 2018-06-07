@@ -1,6 +1,6 @@
 /*
-* libtcod 1.5.1
-* Copyright (c) 2008,2009,2010,2012 Jice & Mingos
+* libtcod
+* Copyright (c) 2008-2018 Jice & Mingos & rmtew
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -10,13 +10,14 @@
 *     * Redistributions in binary form must reproduce the above copyright
 *       notice, this list of conditions and the following disclaimer in the
 *       documentation and/or other materials provided with the distribution.
-*     * The name of Jice or Mingos may not be used to endorse or promote products
-*       derived from this software without specific prior written permission.
+*     * The name of Jice or Mingos may not be used to endorse or promote
+*       products derived from this software without specific prior written
+*       permission.
 *
-* THIS SOFTWARE IS PROVIDED BY JICE AND MINGOS ``AS IS'' AND ANY
+* THIS SOFTWARE IS PROVIDED BY JICE, MINGOS AND RMTEW ``AS IS'' AND ANY
 * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL JICE OR MINGOS BE LIABLE FOR ANY
+* DISCLAIMED. IN NO EVENT SHALL JICE, MINGOS OR RMTEW BE LIABLE FOR ANY
 * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -24,10 +25,12 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #ifndef _TCOD_PARSER_HPP
 #define _TCOD_PARSER_HPP
 
+#include "color.hpp"
+#include "list.hpp"
+#include "parser.h"
 /**
 @PageName parser
 @PageTitle File parser
@@ -188,6 +191,7 @@ public :
 	@Py parser_delete(parser)
 	@Param parser	In the C version, the parser handler, returned by TCOD_parser_new.
 	*/
+	~TCODParser();
 
 	// error during parsing. can be called by the parser listener
 	void error(const char *msg, ...);
@@ -201,6 +205,7 @@ public :
 	#pragma warning(default: 4251)
 #endif
 
+	bool hasProperty(const char *name) const;
 	bool getBoolProperty(const char *name) const;
 	int getIntProperty(const char *name) const;
 	int getCharProperty(const char *name) const;
@@ -621,7 +626,7 @@ The code in the example below will result in your error callback called with the
 	typedef union {
 		bool b;
 		char c;
-		int32 i;
+		int32_t i;
 		float f;
 		char *s;
 		TCOD_color_t col;
@@ -633,7 +638,7 @@ The code in the example below will result in your error callback called with the
 /**
  @PageName parser_types
  @FuncDesc Possible types are defined by the TCOD_value_type_t enumeration :
-For python, remove TCOD_ : libtcod.TYPE_BOOL
+For Python, remove TCOD_ : libtcod.TYPE_BOOL
 <table class="param">
 <tbody><tr><th>TCOD_value_type_t</th><th>Value in file</th><th>TCOD_value_t</th></tr>
 

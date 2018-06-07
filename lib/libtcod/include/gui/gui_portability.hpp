@@ -25,27 +25,25 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef _TCOD_MOUSE_H
-#define _TCOD_MOUSE_H
+#ifndef TCOD_GUI_PORTABILITY_HPP
+#define TCOD_GUI_PORTABILITY_HPP
 
-#include "libtcod_portability.h"
+#include "../libtcod_portability.h"
 
-#ifdef TCOD_CONSOLE_SUPPORT
-
-#include "mouse_types.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-TCODLIB_API void TCOD_mouse_show_cursor(bool visible);
-TCODLIB_API TCOD_mouse_t TCOD_mouse_get_status(void);
-TCODLIB_API bool TCOD_mouse_is_cursor_visible(void);
-TCODLIB_API void TCOD_mouse_move(int x, int y);
-TCODLIB_API void TCOD_mouse_includes_touch(bool enable);
-#ifdef __cplusplus
-}
+#ifdef TCOD_VISUAL_STUDIO
+#pragma warning(disable:4996)
+#pragma warning(disable:4251)
 #endif
 
-#endif /* TCOD_CONSOLE_SUPPORT */
+// DLL export
+#ifdef TCOD_WINDOWS
+#ifdef LIBTCOD_GUI_EXPORTS
+#define TCODLIB_GUI_API __declspec(dllexport)
+#else
+#define TCODLIB_GUI_API __declspec(dllimport)
+#endif
+#else
+#define TCODLIB_GUI_API
+#endif
 
-#endif /* _TCOD_MOUSE_H */
+#endif /* TCOD_GUI_PORTABILITY_HPP */

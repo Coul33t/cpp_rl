@@ -25,27 +25,15 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef _TCOD_MOUSE_H
-#define _TCOD_MOUSE_H
+#ifndef LIBTCOD_UTILITY_H
+#define LIBTCOD_UTILITY_H
+/******************************************
+ utility macros
+ ******************************************/
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define ABS(a) ((a)<0?-(a):(a))
+#define CLAMP(a, b, x)		((x) < (a) ? (a) : ((x) > (b) ? (b) : (x)))
+#define LERP(a, b, x) ( (a) + (x) * ((b) - (a)) )
 
-#include "libtcod_portability.h"
-
-#ifdef TCOD_CONSOLE_SUPPORT
-
-#include "mouse_types.h"
-
-#ifdef __cplusplus
-extern "C" {
 #endif
-TCODLIB_API void TCOD_mouse_show_cursor(bool visible);
-TCODLIB_API TCOD_mouse_t TCOD_mouse_get_status(void);
-TCODLIB_API bool TCOD_mouse_is_cursor_visible(void);
-TCODLIB_API void TCOD_mouse_move(int x, int y);
-TCODLIB_API void TCOD_mouse_includes_touch(bool enable);
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* TCOD_CONSOLE_SUPPORT */
-
-#endif /* _TCOD_MOUSE_H */

@@ -1,6 +1,6 @@
 /*
-* libtcod 1.5.1
-* Copyright (c) 2008,2009,2010,2012 Jice & Mingos
+* libtcod
+* Copyright (c) 2008-2018 Jice & Mingos & rmtew
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -10,13 +10,14 @@
 *     * Redistributions in binary form must reproduce the above copyright
 *       notice, this list of conditions and the following disclaimer in the
 *       documentation and/or other materials provided with the distribution.
-*     * The name of Jice or Mingos may not be used to endorse or promote products
-*       derived from this software without specific prior written permission.
+*     * The name of Jice or Mingos may not be used to endorse or promote
+*       products derived from this software without specific prior written
+*       permission.
 *
-* THIS SOFTWARE IS PROVIDED BY JICE AND MINGOS ``AS IS'' AND ANY
+* THIS SOFTWARE IS PROVIDED BY JICE, MINGOS AND RMTEW ``AS IS'' AND ANY
 * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL JICE OR MINGOS BE LIABLE FOR ANY
+* DISCLAIMED. IN NO EVENT SHALL JICE, MINGOS OR RMTEW BE LIABLE FOR ANY
 * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -24,10 +25,18 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #ifndef _TCOD_PARSER_H
 #define _TCOD_PARSER_H
 
+#include "libtcod_portability.h"
+#include "color.h"
+#include "list.h"
+#include "lex.h"
+#include "mersenne.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /* generic type */
 typedef enum {
 	TCOD_TYPE_NONE,
@@ -77,7 +86,7 @@ typedef enum {
 typedef union {
 	bool b;
 	char c;
-	int32 i;
+	int32_t i;
 	float f;
 	char *s;
 	TCOD_color_t col;
@@ -114,7 +123,7 @@ typedef TCOD_value_t (*TCOD_parser_custom_t)(TCOD_lex_t *lex, TCOD_parser_listen
 /* the parser */
 typedef void *TCOD_parser_t;
 
-TCODLIB_API TCOD_parser_t TCOD_parser_new();
+TCODLIB_API TCOD_parser_t TCOD_parser_new(void);
 TCODLIB_API TCOD_parser_struct_t TCOD_parser_new_struct(TCOD_parser_t parser, char *name);
 TCODLIB_API TCOD_value_type_t TCOD_parser_new_custom_type(TCOD_parser_t parser,TCOD_parser_custom_t custom_type_parser);
 TCODLIB_API void TCOD_parser_run(TCOD_parser_t parser, const char *filename, TCOD_parser_listener_t *listener);
@@ -122,6 +131,7 @@ TCODLIB_API void TCOD_parser_delete(TCOD_parser_t parser);
 /* error during parsing. can be called by the parser listener */
 TCODLIB_API void TCOD_parser_error(const char *msg, ...);
 /* default parser listener */
+TCODLIB_API bool TCOD_parser_has_property(TCOD_parser_t parser, const char *name);
 TCODLIB_API bool TCOD_parser_get_bool_property(TCOD_parser_t parser, const char *name);
 TCODLIB_API int TCOD_parser_get_char_property(TCOD_parser_t parser, const char *name);
 TCODLIB_API int TCOD_parser_get_int_property(TCOD_parser_t parser, const char *name);
@@ -152,19 +162,21 @@ typedef struct {
 	TCOD_list_t structs;
 	/* list of custom type parsers */
 	TCOD_parser_custom_t customs[16];
-	/* fatal error occured */
+	/* fatal error occurred */
 	bool fatal;
 	/* list of properties if default listener is used */
 	TCOD_list_t props;
 } TCOD_parser_int_t;
-TCODLIB_API TCOD_value_t TCOD_parse_bool_value();
-TCODLIB_API TCOD_value_t TCOD_parse_char_value();
-TCODLIB_API TCOD_value_t TCOD_parse_integer_value();
-TCODLIB_API TCOD_value_t TCOD_parse_float_value();
-TCODLIB_API TCOD_value_t TCOD_parse_string_value();
-TCODLIB_API TCOD_value_t TCOD_parse_color_value();
-TCODLIB_API TCOD_value_t TCOD_parse_dice_value();
+TCODLIB_API TCOD_value_t TCOD_parse_bool_value(void);
+TCODLIB_API TCOD_value_t TCOD_parse_char_value(void);
+TCODLIB_API TCOD_value_t TCOD_parse_integer_value(void);
+TCODLIB_API TCOD_value_t TCOD_parse_float_value(void);
+TCODLIB_API TCOD_value_t TCOD_parse_string_value(void);
+TCODLIB_API TCOD_value_t TCOD_parse_color_value(void);
+TCODLIB_API TCOD_value_t TCOD_parse_dice_value(void);
 TCODLIB_API TCOD_value_t TCOD_parse_value_list_value(TCOD_struct_int_t *def,int listnum);
 TCODLIB_API TCOD_value_t TCOD_parse_property_value(TCOD_parser_int_t *parser, TCOD_parser_struct_t def, char *propname, bool list);
-
+#ifdef __cplusplus
+}
+#endif
 #endif

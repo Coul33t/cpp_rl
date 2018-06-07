@@ -1,6 +1,6 @@
 /*
-* libtcod 1.5.1
-* Copyright (c) 2008,2009,2010,2012 Jice & Mingos
+* libtcod
+* Copyright (c) 2008-2018 Jice & Mingos & rmtew
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -10,13 +10,14 @@
 *     * Redistributions in binary form must reproduce the above copyright
 *       notice, this list of conditions and the following disclaimer in the
 *       documentation and/or other materials provided with the distribution.
-*     * The name of Jice or Mingos may not be used to endorse or promote products
-*       derived from this software without specific prior written permission.
+*     * The name of Jice or Mingos may not be used to endorse or promote
+*       products derived from this software without specific prior written
+*       permission.
 *
-* THIS SOFTWARE IS PROVIDED BY JICE AND MINGOS ``AS IS'' AND ANY
+* THIS SOFTWARE IS PROVIDED BY JICE, MINGOS AND RMTEW ``AS IS'' AND ANY
 * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL JICE OR MINGOS BE LIABLE FOR ANY
+* DISCLAIMED. IN NO EVENT SHALL JICE, MINGOS OR RMTEW BE LIABLE FOR ANY
 * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -24,9 +25,12 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #ifndef _TCOD_CONSOLE_TYPES_H
 #define _TCOD_CONSOLE_TYPES_H
+
+#include "libtcod_portability.h"
+
+typedef void * TCOD_console_t;
 
 typedef enum {
 	TCODK_NONE,
@@ -94,18 +98,24 @@ typedef enum {
 	TCODK_NUMLOCK,
 	TCODK_SCROLLLOCK,
 	TCODK_SPACE,
-	TCODK_CHAR
+	TCODK_CHAR,
+	TCODK_TEXT
 } TCOD_keycode_t;
 
-/* key data : special code or character */
+#define TCOD_KEY_TEXT_SIZE 32
+
+/* key data : special code or character or text */
 typedef struct {
 	TCOD_keycode_t vk; /*  key code */
 	char c; /* character if vk == TCODK_CHAR else 0 */
+	char text[TCOD_KEY_TEXT_SIZE]; /* text if vk == TCODK_TEXT else text[0] == '\0' */
 	bool pressed ; /* does this correspond to a key press or key release event ? */
 	bool lalt ;
 	bool lctrl ;
+	bool lmeta ;
 	bool ralt ;
 	bool rctrl ;
+	bool rmeta ;
 	bool shift ;
 } TCOD_key_t;
 
@@ -236,26 +246,55 @@ typedef enum {
 	TCOD_KEY_RELEASED=2,
 } TCOD_key_status_t;
 
-/* custom font flags */
+/**
+ *  These font flags can be OR'd together into a bit-field and passed to
+ *  TCOD_console_set_custom_font
+ */
 typedef enum {
 	TCOD_FONT_LAYOUT_ASCII_INCOL=1,
+  /**< Tiles are arranged in column-major order.
+   *
+   *       0 3 6
+   *       1 4 7
+   *       2 5 8
+   */
 	TCOD_FONT_LAYOUT_ASCII_INROW=2,
+  /**< Tiles are arranged in row-major order.
+   *
+   *       0 1 2
+   *       3 4 5
+   *       6 7 8
+   */
 	TCOD_FONT_TYPE_GREYSCALE=4,
+  /**< Converts all tiles into a monochrome gradient. */
 	TCOD_FONT_TYPE_GRAYSCALE=4,
 	TCOD_FONT_LAYOUT_TCOD=8,
+  /**< A unique layout used by some of libtcod's fonts. */
 } TCOD_font_flags_t;
-
+/**
+ *  The available renderers.
+ */
 typedef enum {
 	TCOD_RENDERER_GLSL,
+  /**< An OpenGL implementation using a shader. */
 	TCOD_RENDERER_OPENGL,
+  /**<
+   *  An OpenGL implementation without a shader.
+   *
+   *  Performs worse than TCOD_RENDERER_GLSL without many benefits.
+   */
 	TCOD_RENDERER_SDL,
+  /**<
+   *  A software based renderer.
+   *
+   *  The font file is loaded into RAM instead of VRAM in this implementation.
+   */
 	TCOD_NB_RENDERERS,
 } TCOD_renderer_t;
 
 typedef enum {
-	TCOD_LEFT, 
-	TCOD_RIGHT, 
-	TCOD_CENTER 
+	TCOD_LEFT,
+	TCOD_RIGHT,
+	TCOD_CENTER
 } TCOD_alignment_t;
-
 #endif /* _TCOD_CONSOLE_TYPES_H */
