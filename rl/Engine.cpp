@@ -1,4 +1,4 @@
-#include "Main.h"
+#include "Engine.h"
 
 Engine::Engine(): game_status(STARTUP) {
 	TCODConsole::setCustomFont("Anikki_square_16x16.png", TCOD_FONT_LAYOUT_ASCII_INROW);
@@ -88,7 +88,7 @@ bool Engine::move(Actor* actor, int dx, int dy) {
 
 	else {
 		for (auto it = actors.begin(); it != actors.end(); it++) {
-			if (((*it) != player) && ((*it)->x == (actor->x + dx) || (*it)->y == (actor->y + dy))) {
+			if ((*it) != player && (*it)->x == (actor->x + dx) && (*it)->y == (actor->y + dy)) {
 				actor->attack((*it));
 				return true;
 			}

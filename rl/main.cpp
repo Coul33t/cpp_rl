@@ -1,6 +1,8 @@
 #include <iostream>
 
-#include "Main.h"
+#include "libtcod.hpp"
+
+#include "Engine.h"
 
 // Not gonna lie, having accessors that does nothing else than returning references
 // to the variables is pointless to me. My code isn't to be used by someone else

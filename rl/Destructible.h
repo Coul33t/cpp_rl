@@ -1,7 +1,12 @@
-#ifndef __DESTRUCTIBLE__
-#define __DESTRUCTIBLE__
+#pragma once
 
 #include <string>
+
+#include "libtcod.hpp"
+
+#include "Actor.h"
+
+class Actor;
 
 class Destructible {
 	public:
@@ -21,5 +26,3 @@ class Destructible {
 
 	private:
 };
-
-#endif

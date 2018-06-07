@@ -1,9 +1,13 @@
-#ifndef __ENGINE__
-#define __ENGINE__
+#pragma once
 
 #include <iostream>
 #include <algorithm>
 #include <vector>
+
+#include "libtcod.hpp"
+
+#include "Actor.h"
+#include "Map.h"
 
 class Engine {
 	public:
@@ -42,5 +46,3 @@ class Engine {
 
 		static const int CLUSTER_THRESHOLD = 20;
 };
-
-#endif // __ENGINE__

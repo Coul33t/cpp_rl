@@ -1,4 +1,4 @@
-#include "Main.h"
+#include "Destructible.h"
 
 Destructible::Destructible(int max_hp, int hp, int defense, std::string c_name):
 	max_hp(max_hp), hp(hp), defense(defense), corpse_name(c_name){

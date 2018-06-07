@@ -1,9 +1,12 @@
-#ifndef __ACTOR__
-#define __ACTOR__
+#pragma once
 
 #include <string>
 #include <utility> 
 #include <iostream>
+
+#include "libtcod.hpp"
+
+class Destructible;
 
 class Actor {
 	// Not gonna lie, having accessors that does nothing else than returning references
@@ -35,5 +38,3 @@ class Actor {
 		
 
 };
-
-#endif // __ACTOR__

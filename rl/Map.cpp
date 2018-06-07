@@ -1,4 +1,4 @@
-#include "Main.h"
+#include "Map.h"
 
 class BspListener : public ITCODBspCallback {
 	private:

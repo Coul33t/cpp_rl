@@ -1,5 +1,4 @@
-#ifndef __MAP__
-#define __MAP__
+#pragma once
 
 #include <iostream>
 
@@ -7,6 +6,8 @@
 
 #include <stdlib.h>
 #include <time.h>
+
+#include "libtcod.hpp"
 
 struct Tile {
 	int ch;
@@ -59,5 +60,3 @@ class Map {
 		static const int ROOM_MAX_SIZE = 12;
 		static const int ROOM_MIN_SIZE = 7;
 };
-
-#endif // __MAP__

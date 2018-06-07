@@ -1,6 +1,6 @@
-#include "Main.h"
+#include "Actor.h"
 
-Actor::Actor(int x, int y, std::string name, int ch, TCODColor colour) :
+Actor::Actor(int x, int y, std::string name, int ch, TCODColor col) :
 	x(x), y(y), name(name), ch(ch), col(col), blocks(true), is_dead(false) {
 
 }
