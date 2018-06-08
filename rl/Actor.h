@@ -6,6 +6,8 @@
 
 #include "libtcod.hpp"
 
+#include "Destructible.h"
+
 class Destructible;
 
 class Actor {
@@ -15,13 +17,18 @@ class Actor {
 	// (and what I can do) with my objects. Bloating my code with player->getX() instead of 
 	// player->x is boring and tedious.
 	public:
+		// Position
 		int x, y;
-		std::string name;
+
+		// Rendering
 		int ch;
 		TCODColor col;
+
 		bool blocks;
 		bool is_dead;
 
+		std::string name;
+		
 		Destructible* destructible;
 
 	public:
